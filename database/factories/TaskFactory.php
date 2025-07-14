@@ -19,13 +19,14 @@ class TaskFactory extends Factory
         return [
             'name' => fake()->sentence(),
             'description' => fake()->sentence(),
-            'date' => fake()->dateTimeBetween('now', '+1 year'),
+            'due_date' => fake()->dateTimeBetween('now', '+1 year'),
             'status' => fake()->randomElement(['in progress', 'completed', 'pending']),
             'priority' => fake()->randomElement(['low', 'medium', 'high']),
             'image_path' => fake()->imageUrl(),
             'assigned_user_id' => 1,
-            'created_at' => 1,
-            'updated_at' => 1
+            'created_by' => 1,
+            'updated_by' => 1,
+            'project_id' => 1
         ];
     }
 }
