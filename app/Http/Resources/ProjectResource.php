@@ -21,8 +21,12 @@ class ProjectResource extends JsonResource
             'due_date' => $this->due_date,
             'image_path' => $this->image_path,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_by' => $this->whenLoaded('createdBy', function () {
+                return new UserResource($this->createdBy);
+            }),
+            'updated_by' => $this->whenLoaded('updatedBy', function () {
+                return new UserResource($this->createdBy);
+            }),
         ];
     }
 }
