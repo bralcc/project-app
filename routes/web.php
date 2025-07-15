@@ -15,9 +15,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('project', ProjectController::class);
-    Route::resource('task', TaskController::class);
-    Route::resource('profile', ProfileController::class);
+    Route::resource('project', ProjectController::class)->names('project');
+    Route::resource('task', TaskController::class)->names('task');
+    Route::resource('profile', ProfileController::class)->names('profile');
 });
 
 require __DIR__ . '/settings.php';
