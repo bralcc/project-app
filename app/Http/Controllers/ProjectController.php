@@ -7,15 +7,32 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $query = Project::query()->with(['createdBy', 'updatedBy']);
+
+        if ($request->has('name') && $request->name !== '') {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->has('status') && $request->status !== 'All') {
+            $query->where('status', 'like', '%' . $request->status . '%');
+        }
+
+        if ($request->has('user') && $request->user !== '') {
+            $query->whereHas('createdBy', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->user . '%');
+            });
+        }
+
+
         $projects = $query->paginate(10)->onEachSide(1);
         return Inertia::render('project/index', ["projects" => ProjectResource::collection($projects)]);
     }
