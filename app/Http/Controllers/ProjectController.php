@@ -8,38 +8,22 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Http\Filter\ProjectFilter;
+use App\Traits\ApiResponse;
 
 class ProjectController extends Controller
 {
+
+    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(ProjectFilter $filter, Request $request)
     {
-        // dd([
-        //     'name' => $request->name,
-        //     'status' => $request->status,
-        //     'user' => $request->user,
-        //     'all_params' => $request->all()
-        // ]);
-
-        $query = Project::query()->with(['createdBy', 'updatedBy']);
-
-        if ($request->has('name') && $request->name !== '') {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
-
-        if ($request->has('status') && $request->status !== 'All') {
-            $query->where('status', 'like', '%' . $request->status . '%');
-        }
-
-        if ($request->has('user') && $request->user !== '') {
-            $query->whereHas('createdBy', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->user . '%');
-            });
-        }
-
-        $projects = $query->paginate(10)->onEachSide(1);
+        $projects = Project::filter($filter)
+            ->with('Tasks', 'createdBy', 'updatedBy')
+            ->orderBy('id')
+            ->paginate(10);
         return Inertia::render('project/index', ["projects" => ProjectResource::collection($projects)]);
     }
 

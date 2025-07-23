@@ -27,7 +27,6 @@ function handleStatusColor(status: string) {
 }
 
 export default function Index({ projects }: Props) {
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Projects" />
@@ -93,7 +92,7 @@ export default function Index({ projects }: Props) {
                                     <span
                                         className={`inline-flex rounded-full px-2 text-xs leading-5 font-semibold whitespace-nowrap ${handleStatusColor(project.status)}`}
                                     >
-                                        {project.status}
+                                        {project.status.toUpperCase()}
                                     </span>
                                 </td>
                                 <td className={TABLE_CLASSES.cell}>{project.created_by.name}</td>
@@ -119,7 +118,7 @@ export default function Index({ projects }: Props) {
             <div>
                 <Pagination data={projects}></Pagination>
             </div>
-            <pre>{JSON.stringify(projects, undefined, 2)}</pre>
+            {/* <pre>{JSON.stringify(projects, undefined, 2)}</pre> */}
         </AppLayout>
     );
 }
