@@ -16,6 +16,13 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
+        // dd([
+        //     'name' => $request->name,
+        //     'status' => $request->status,
+        //     'user' => $request->user,
+        //     'all_params' => $request->all()
+        // ]);
+
         $query = Project::query()->with(['createdBy', 'updatedBy']);
 
         if ($request->has('name') && $request->name !== '') {
@@ -31,7 +38,6 @@ class ProjectController extends Controller
                 $q->where('name', 'like', '%' . $request->user . '%');
             });
         }
-
 
         $projects = $query->paginate(10)->onEachSide(1);
         return Inertia::render('project/index', ["projects" => ProjectResource::collection($projects)]);

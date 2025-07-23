@@ -6,7 +6,6 @@ import AppLayout from '@/layouts/app-layout';
 import { COLORS, TABLE_CLASSES } from '@/lib/constants';
 import { PaginatedResponse, Project, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -28,23 +27,6 @@ function handleStatusColor(status: string) {
 }
 
 export default function Index({ projects }: Props) {
-    const [filter, setFilter] = useState({
-        name: '',
-        status: 'All',
-        user: '',
-    });
-
-    // Debounced function to apply filters
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            if (filter.name !== '' || filter.status !== 'All' || filter.user !== '') {
-                console.log('Filter being sent:', filter);
-                router.get(route('project.index'), filter);
-            }
-        }, 500); // Wait 500ms after user stops typing
-
-        return () => clearTimeout(timeoutId); // Cleanup previous timeout
-    }, [filter]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -67,12 +49,10 @@ export default function Index({ projects }: Props) {
                                 <Input
                                     type="text"
                                     placeholder="name"
-                                    value={filter.name}
-                                    onChange={(e) => {
-                                        setFilter((prevFilter) => ({
-                                            ...prevFilter,
-                                            name: e.target.value,
-                                        }));
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            router.get('/project', { name: (e.target as HTMLInputElement).value });
+                                        }
                                     }}
                                 ></Input>
                             </th>
@@ -83,11 +63,8 @@ export default function Index({ projects }: Props) {
                                     placeholder="Choose status"
                                     items={['All', 'Completed', 'In Progress', 'Pending']}
                                     className="max-w-xs"
-                                    onSelect={(selectedStatus) => {
-                                        setFilter((prevFilter) => ({
-                                            ...prevFilter,
-                                            status: selectedStatus,
-                                        }));
+                                    onSelect={(status) => {
+                                        router.get('/project', { status });
                                     }}
                                 />
                             </th>
@@ -95,12 +72,10 @@ export default function Index({ projects }: Props) {
                                 <Input
                                     type="text"
                                     placeholder="user"
-                                    value={filter.user}
-                                    onChange={(e) => {
-                                        setFilter((prevFilter) => ({
-                                            ...prevFilter,
-                                            user: e.target.value,
-                                        }));
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            router.get('/project', { user: (e.target as HTMLInputElement).value });
+                                        }
                                     }}
                                 ></Input>
                             </th>
